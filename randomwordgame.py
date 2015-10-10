@@ -1,5 +1,5 @@
 from enum import Enum, unique
-from Word import Word
+from word import Word
 import random
 
 @unique
@@ -7,7 +7,7 @@ class PlayType(Enum):
     english_portuguese = 1
     portuguese_english = 2
 
-class GamaGame:
+class RandomWordGame:
 
     def __init__(self):
         self.words = []
@@ -35,16 +35,17 @@ class GamaGame:
         print('2) List all words')
         print('3) Play Portuguese -> English')
         print('4) Play English -> Portuguese')
-        print('5) Check Score')
-        print('6) Exit')
+        print('5) Play Randonly')
+        print('6) Check Score')
+        print('7) Exit')
         self.print_line()
 
         option = int(input('Choose an option'))
-        if option < 1 or option > 6:
+        if option < 1 or option > 7:
             print('Oops, it looks like you entered a invalid value')
             self.choose()
 
-        if option == 6:
+        if option == 7:
             self.exit()
 
         if option == 1:
@@ -55,7 +56,9 @@ class GamaGame:
             self.start(PlayType.portuguese_english)
         elif option == 4:
             self.start(PlayType.english_portuguese)
-        else:  # option is 5
+        elif option == 5:
+            self.start(PlayType.english_portuguese, is_random_mode=True)
+        else:  # option is 6
             self.check_score()
 
         self.choose()
@@ -91,11 +94,11 @@ class GamaGame:
 
         return
 
-    def start(self,playtype):
+    def start(self,playtype, is_random_mode = False):
         self.print_line()
 
         if len(self.words) <= 3:
-            print('Ouch, it looks like you have not added the amount of word needed')
+            print('Ouch, it looks like you have not added the amount of words needed')
             self.choose()
 
         print('Welcome bro, your are going to play in ' + str(playtype) + ' type, enjoy it :)')
@@ -106,7 +109,7 @@ class GamaGame:
         internal_words = self.get_randon_words(question_word)
 
         if playtype == PlayType.english_portuguese:
-            print('Which the word in english \'{0}\' means in portuguese:'.format(question_word.get_english()))
+            print('What the word in english \'{0}\' means in portuguese:'.format(question_word.get_english()))
         else:
             print('A palavra em Portugues \'{0}\' siguinifica o que em ingles?:'.format(question_word.get_portuguese()))
 
@@ -131,7 +134,10 @@ class GamaGame:
         else:
             print('Sorry to say it, but you are wrong, =/')
 
-        self.start(playtype)
+        if is_random_mode:
+            playtype = PlayType(random.randint(1, 2))
+
+        self.start(playtype, is_random_mode)
 
     def get_question_word(self):
         min = 0
